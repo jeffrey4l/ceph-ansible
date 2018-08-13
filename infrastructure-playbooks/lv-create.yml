@@ -22,7 +22,7 @@
 
   tasks:
 
-  - name: Include vars of lv_vars.yaml
+  - name: include vars of lv_vars.yaml
     include_vars:
       file: lv_vars.yaml
     failed_when: false
@@ -34,7 +34,7 @@
       state: present
 
   # Make entire nvme device a VG
-  - name: add nvme device as LVM PV
+  - name: add nvme device as lvm pv
     lvg:
       force: yes
       pvs: "{{ nvme_device }}"
@@ -42,7 +42,7 @@
       state: present
       vg: "{{ nvme_vg_name }}"
 
-  - name: create LVs for FS journals for the bucket index on the NVMe device
+  - name: create lvs for fs journals for the bucket index on the nvme device
     lvol:
       lv: "{{ item.journal_name }}"
       vg: "{{ nvme_vg_name }}"
@@ -51,7 +51,7 @@
     with_items:
       - "{{ nvme_device_lvs }}"
 
-  - name: create LVs for FS journals for hdd devices
+  - name: create lvs for fs journals for hdd devices
     lvol:
       lv: "{{ hdd_journal_prefix }}-{{ item.split('/')[-1] }}"
       vg: "{{ nvme_vg_name }}"
@@ -59,7 +59,7 @@
     with_items:
       - "{{ hdd_devices }}"
 
-  - name: create the LV for data portion of the bucket index on the NVMe device
+  - name: create the lv for data portion of the bucket index on the nvme device
     lvol:
       lv: "{{ item.lv_name }}"
       vg: "{{ nvme_vg_name }}"
@@ -69,7 +69,7 @@
       - "{{ nvme_device_lvs }}"
 
     # Make sure all hdd devices have a unique volume group
-  - name: create VGs for all hdd devices
+  - name: create vgs for all hdd devices
     lvg:
       force: yes
       pvs: "{{ item }}"
@@ -79,7 +79,7 @@
     with_items:
       - "{{ hdd_devices }}"
 
-  - name: create LVs for the data portion on hdd devices
+  - name: create lvs for the data portion on hdd devices
     lvol:
       lv: "{{ hdd_lv_prefix }}-{{ item.split('/')[-1] }}"
       vg: "{{ hdd_vg_prefix }}-{{ item.split('/')[-1] }}"
